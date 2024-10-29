@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zufällige Personenauswahl</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 384px;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .timer {
+            font-size: 3.75rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            color: #2563eb;
+        }
+
+        .name-display {
+            font-size: 1.875rem;
+            font-weight: 600;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            color: #1f2937;
+        }
+
+        .button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .button:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 class="title">Zufällige Auswahl</h2>
+        <div class="timer" id="timer">30</div>
+        <div class="name-display" id="nameDisplay"></div>
+        <button class="button" id="startButton">Start</button>
+    </div>
+
+    <script>
+        const names = ['Stefan', 'Wolfgang', 'Thomas'];
+        let isRunning = false;
+        let timer;
+        let animationTimer;
+        
+        const timerElement = document.getElementById('timer');
+        const nameDisplay = document.getElementById('nameDisplay');
+        const startButton = document.getElementById('startButton');
+
+        function updateTimer(seconds) {
+            timerElement.textContent = seconds;
+        }
+
+        function showRandomName() {
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            nameDisplay.textContent = randomName;
+            return randomName;
+        }
+
+        function startSelection() {
+            if (isRunning) return;
+
+            isRunning = true;
+            startButton.disabled = true;
+            let timeLeft = 30;
+            updateTimer(timeLeft);
+            
+            // Start der Namen-Animation
+            animationTimer = setInterval(showRandomName, 100);
+
+            // Countdown-Timer
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer(timeLeft);
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    clearInterval(animationTimer);
+                    isRunning = false;
+                    startButton.disabled = false;
+                    
+                    // Finale Auswahl
+                    const finalName = showRandomName();
+                    nameDisplay.textContent = finalName;
+                }
+            }, 1000);
+        }
+
+        startButton.addEventListener('click', startSelection);
+    </script>
+</body>
+</html>
